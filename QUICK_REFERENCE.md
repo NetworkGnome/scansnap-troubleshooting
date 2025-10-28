@@ -13,13 +13,13 @@ cd scansnap-troubleshooting
 ./scripts/scansnap_diagnostics.sh | tee output.txt
 
 # Test specific port
-nc -zv 10.100.10.61 443
+nc -zv 192.168.1.100 443
 
 # Check if scanner is pingable
-ping -c 4 10.100.10.61
+ping -c 4 192.168.1.100
 
 # Check ARP table
-arp -a | grep 10.100.10.61
+arp -a | grep 192.168.1.100
 ```
 
 ## Network Discovery
@@ -40,7 +40,7 @@ dns-sd -B _scanner._tcp
 sudo ./scripts/fix_probe_name_issue.sh
 
 # Quick fix - add to hosts file
-echo "10.100.10.61 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
+echo "192.168.1.100 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
 
 # Flush DNS cache (Linux)
 sudo systemd-resolve --flush-caches
@@ -55,7 +55,7 @@ sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder
 sudo ./scripts/scansnap_wireshark.sh
 
 # Manual capture with tcpdump
-sudo tcpdump -i any -w scanner.pcap host 10.100.10.61
+sudo tcpdump -i any -w scanner.pcap host 192.168.1.100
 
 # Analyze capture
 wireshark scanner.pcap
@@ -64,21 +64,21 @@ wireshark scanner.pcap
 ## Web Interface
 ```bash
 # Access scanner web UI
-curl -k https://10.100.10.61
+curl -k https://192.168.1.100
 
 # Or open in browser
-open https://10.100.10.61  # macOS
-xdg-open https://10.100.10.61  # Linux
+open https://192.168.1.100  # macOS
+xdg-open https://192.168.1.100  # Linux
 ```
 
 ## Port Testing
 ```bash
 # Test individual ports
-nc -zv 10.100.10.61 443  # HTTPS
-nc -zv 10.100.10.61 80   # HTTP
+nc -zv 192.168.1.100 443  # HTTPS
+nc -zv 192.168.1.100 80   # HTTP
 
 # Scan all common ports
-nmap -p 80,443,8080,8194,9000-9010 10.100.10.61
+nmap -p 80,443,8080,8194,9000-9010 192.168.1.100
 ```
 
 ## UniFi Specific
@@ -112,7 +112,7 @@ sudo ufw status
 
 ## Wireshark Filters
 ```
-ip.addr == 10.100.10.61
+ip.addr == 192.168.1.100
 udp.port == 8194
 udp.port == 5353 and dns
 http or https
