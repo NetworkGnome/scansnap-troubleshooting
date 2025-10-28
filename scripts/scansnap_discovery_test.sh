@@ -3,13 +3,27 @@
 # ScanSnap Discovery Protocol Tester
 # The ScanSnap app uses UDP broadcasts on port 8194 to discover scanners
 
-SCANNER_IP="10.100.10.61"
+# Default example values - CHANGE THESE to match your scanner
+SCANNER_IP="${SCANNER_IP:-192.168.1.100}"
 BROADCAST_PORT="8194"
+
+# Allow configuration via arguments or environment variables
+if [ $# -ge 1 ]; then
+    SCANNER_IP="$1"
+fi
 
 echo "========================================="
 echo "ScanSnap Discovery Protocol Test"
 echo "========================================="
 echo ""
+echo "Scanner IP: $SCANNER_IP"
+echo ""
+
+if [ "$SCANNER_IP" = "192.168.1.100" ]; then
+    echo "⚠️  WARNING: Using default IP address!"
+    echo "   Configure: ./scansnap_discovery_test.sh YOUR_IP"
+    echo ""
+fi
 
 # Check if socat is available (better for UDP testing)
 if ! command -v socat &> /dev/null; then

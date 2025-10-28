@@ -1,16 +1,48 @@
 #!/bin/bash
 
 # ScanSnap IX1600 Network Diagnostics Script
-# Device IP: 10.100.10.61
-# Device MAC: 84:25:3f:6d:b6:10
+# Configure these values for your scanner:
 
-SCANNER_IP="10.100.10.61"
-SCANNER_MAC="84:25:3f:6d:b6:10"
+# Default example values - CHANGE THESE to match your scanner
+SCANNER_IP="${SCANNER_IP:-192.168.1.100}"
+SCANNER_MAC="${SCANNER_MAC:-00:00:00:00:00:00}"
+
+# You can also set these as environment variables:
+# export SCANNER_IP="your.scanner.ip"
+# export SCANNER_MAC="your:mac:address"
+# ./scansnap_diagnostics.sh
+
+# Or pass them as arguments:
+if [ $# -eq 2 ]; then
+    SCANNER_IP="$1"
+    SCANNER_MAC="$2"
+elif [ $# -eq 1 ]; then
+    SCANNER_IP="$1"
+fi
 
 echo "========================================="
 echo "ScanSnap IX1600 Network Diagnostics"
 echo "========================================="
 echo ""
+echo "Scanner IP:  $SCANNER_IP"
+echo "Scanner MAC: $SCANNER_MAC"
+echo ""
+
+# Warn if using default values
+if [ "$SCANNER_IP" = "192.168.1.100" ]; then
+    echo "⚠️  WARNING: Using default IP address!"
+    echo "   Please configure your scanner's IP address:"
+    echo "   - Edit SCANNER_IP in this script, OR"
+    echo "   - Run: ./scansnap_diagnostics.sh YOUR_IP YOUR_MAC, OR"
+    echo "   - Run: export SCANNER_IP=YOUR_IP && ./scansnap_diagnostics.sh"
+    echo ""
+    read -p "Continue anyway? (y/N) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+    echo ""
+fi
 
 # 1. Basic connectivity test
 echo "1. Testing basic connectivity..."

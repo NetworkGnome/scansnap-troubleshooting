@@ -3,15 +3,37 @@
 # Script to diagnose and fix the "Probes" name issue with ScanSnap
 # When the scanner appears with wrong hostname
 
-SCANNER_IP="10.100.10.61"
-SCANNER_MAC="84:25:3f:6d:b6:10"
+# Default example values - CHANGE THESE to match your scanner
+SCANNER_IP="${SCANNER_IP:-192.168.1.100}"
+SCANNER_MAC="${SCANNER_MAC:-00:00:00:00:00:00}"
+
+# Allow configuration via arguments or environment variables
+if [ $# -eq 2 ]; then
+    SCANNER_IP="$1"
+    SCANNER_MAC="$2"
+elif [ $# -eq 1 ]; then
+    SCANNER_IP="$1"
+fi
 
 echo "========================================="
 echo "ScanSnap 'Probes' Name Issue Diagnostics"
 echo "========================================="
 echo ""
+echo "Scanner IP:  $SCANNER_IP"
+echo "Scanner MAC: $SCANNER_MAC"
+echo ""
 
-echo "ISSUE: Scanner showing incorrect name (pulling from UniFi probes)"
+if [ "$SCANNER_IP" = "192.168.1.100" ]; then
+    echo "⚠️  WARNING: Using default IP address!"
+    echo "   Configure: ./fix_probe_name_issue.sh YOUR_IP YOUR_MAC"
+    echo ""
+    read -p "Continue anyway? (y/N) " -n 1 -r
+    echo
+    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 1
+    echo ""
+fi
+
+echo "ISSUE: Scanner showing incorrect name (e.g., pulling from network device list)"
 echo "This usually means DNS/mDNS name resolution is misconfigured"
 echo ""
 

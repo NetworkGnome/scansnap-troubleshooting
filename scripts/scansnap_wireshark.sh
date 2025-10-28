@@ -3,15 +3,33 @@
 # Wireshark/tcpdump capture script for ScanSnap IX1600 debugging
 # This will capture all traffic to/from the scanner
 
-SCANNER_IP="10.100.10.61"
-SCANNER_MAC="84:25:3f:6d:b6:10"
+# Default example values - CHANGE THESE to match your scanner
+SCANNER_IP="${SCANNER_IP:-192.168.1.100}"
+SCANNER_MAC="${SCANNER_MAC:-00:00:00:00:00:00}"
 CAPTURE_FILE="scansnap_capture_$(date +%Y%m%d_%H%M%S).pcap"
 INTERFACE=""
+
+# Allow configuration via arguments or environment variables
+if [ $# -eq 2 ]; then
+    SCANNER_IP="$1"
+    SCANNER_MAC="$2"
+elif [ $# -eq 1 ]; then
+    SCANNER_IP="$1"
+fi
 
 echo "========================================="
 echo "ScanSnap Traffic Capture Script"
 echo "========================================="
 echo ""
+echo "Scanner IP:  $SCANNER_IP"
+echo "Scanner MAC: $SCANNER_MAC"
+echo ""
+
+if [ "$SCANNER_IP" = "192.168.1.100" ]; then
+    echo "⚠️  WARNING: Using default IP address!"
+    echo "   Configure: ./scansnap_wireshark.sh YOUR_IP YOUR_MAC"
+    echo ""
+fi
 
 # Detect network interface
 echo "Available network interfaces:"

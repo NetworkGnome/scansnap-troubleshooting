@@ -56,6 +56,26 @@ cd scansnap-troubleshooting
 chmod +x scripts/*.sh
 ```
 
+### Configuration
+
+**🔒 Your network information stays private!** Scripts use placeholder values and support multiple configuration methods:
+
+```bash
+# Method 1: Create a config file (recommended)
+cp .env.example .env
+nano .env  # Add your scanner's IP and MAC address
+source .env
+
+# Method 2: Use command line arguments
+./scripts/scansnap_diagnostics.sh 192.168.1.50 aa:bb:cc:dd:ee:ff
+
+# Method 3: Export environment variables
+export SCANNER_IP="192.168.1.50"
+export SCANNER_MAC="aa:bb:cc:dd:ee:ff"
+```
+
+**📖 See [CONFIGURATION.md](CONFIGURATION.md) for detailed setup instructions.**
+
 ### Basic Usage
 
 ```bash
@@ -187,14 +207,39 @@ sudo ufw allow 5353/udp comment 'mDNS'
 # Add ScanSnap Home/Manager to allowed apps
 ```
 
-## 📝 Customization
+## 📝 Configuration
 
-All scripts use these variables at the top - update them for your scanner:
+### Multiple Configuration Methods
 
+Scripts support three ways to specify your scanner details:
+
+**1. Configuration File (Recommended):**
 ```bash
-SCANNER_IP="10.100.10.61"        # Your scanner's IP address
-SCANNER_MAC="84:25:3f:6d:b6:10"  # Your scanner's MAC address
+cp .env.example .env
+nano .env  # Edit with your scanner details
+source .env
+./scripts/scansnap_diagnostics.sh
 ```
+
+**2. Command Arguments:**
+```bash
+./scripts/scansnap_diagnostics.sh YOUR_IP YOUR_MAC
+./scripts/fix_probe_name_issue.sh YOUR_IP YOUR_MAC
+```
+
+**3. Environment Variables:**
+```bash
+export SCANNER_IP="192.168.1.50"
+export SCANNER_MAC="aa:bb:cc:dd:ee:ff"
+./scripts/scansnap_diagnostics.sh
+```
+
+### Privacy & Security
+
+- ✅ Scripts use **placeholder values** (192.168.1.100) by default
+- ✅ Your `.env` file is **automatically ignored** by git
+- ✅ **No personal network information** is shared when you push to GitHub
+- 📖 See [CONFIGURATION.md](CONFIGURATION.md) for complete privacy guide
 
 ## 🤝 Contributing
 
