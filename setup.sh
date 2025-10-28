@@ -87,8 +87,8 @@ echo ""
 echo "Enter your scanner details (or press Enter to skip and edit scripts manually later):"
 echo ""
 
-read -p "Scanner IP address (e.g., 10.100.10.61): " scanner_ip
-read -p "Scanner MAC address (e.g., 84:25:3f:6d:b6:10): " scanner_mac
+read -p "Scanner IP address (e.g., 192.168.1.100): " scanner_ip
+read -p "Scanner MAC address (e.g., aa:bb:cc:dd:ee:ff): " scanner_mac
 
 if [ -n "$scanner_ip" ] && [ -n "$scanner_mac" ]; then
     echo ""

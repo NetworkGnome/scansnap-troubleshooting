@@ -99,7 +99,7 @@ echo "----------------------------------------"
 echo "1. Log into UniFi controller (https://$(ip route | grep default | awk '{print $3}'):8443)"
 echo "2. Go to Settings > Networks > Default"
 echo "3. Check DNS settings"
-echo "4. Look for manual DNS entry for 10.100.10.61"
+echo "4. Look for manual DNS entry for 192.168.1.100"
 echo "5. Either remove it or change it to 'ScanSnap-iX1600'"
 echo ""
 

@@ -117,7 +117,7 @@ sudo ./scripts/scansnap_discovery_test.sh
 **Quick Fix:**
 ```bash
 # Add correct hostname to hosts file
-echo "10.100.10.61 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
+echo "192.168.1.100 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
 
 # Flush DNS cache (Linux)
 sudo systemd-resolve --flush-caches
@@ -165,7 +165,7 @@ wireshark scansnap_capture_*.pcap
 
 **Key Wireshark Filters:**
 ```
-ip.addr == 10.100.10.61
+ip.addr == 192.168.1.100
 udp.port == 8194
 udp.port == 5353 and dns
 ```

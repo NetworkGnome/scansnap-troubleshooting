@@ -1,8 +1,8 @@
 # ScanSnap IX1600 Connection Troubleshooting Guide
 
 ## Your Scanner Details
-- **IP Address:** 10.100.10.61
-- **MAC Address:** 84:25:3f:6d:b6:10
+- **IP Address:** 192.168.1.100
+- **MAC Address:** aa:bb:cc:dd:ee:ff
 - **Model:** Fujitsu ScanSnap iX1600
 - **Status:** Pingable but not detected by ScanSnap application
 
@@ -62,11 +62,11 @@ sudo tcpdump -i any -n udp port 8194
 ```bash
 # Check mDNS services
 avahi-browse -a -t | grep -i scan
-avahi-resolve -a 10.100.10.61
+avahi-resolve -a 192.168.1.100
 
 # Check DNS PTR record
-dig -x 10.100.10.61
-nslookup 10.100.10.61
+dig -x 192.168.1.100
+nslookup 192.168.1.100
 ```
 
 **Solutions:**
@@ -79,7 +79,7 @@ sudo systemctl restart avahi-daemon
 sudo killall -HUP mDNSResponder
 
 # Force scanner hostname resolution
-echo "10.100.10.61 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
+echo "192.168.1.100 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
 ```
 
 ### Issue 3: VLAN/Subnet Isolation
@@ -91,13 +91,13 @@ echo "10.100.10.61 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
 ```bash
 # Verify you're on same subnet
 ip addr show | grep inet
-# Should show 10.100.10.x address
+# Should show 192.168.1.x address
 
 # Check multicast routing
 ip mroute show
 
 # Test if broadcasts reach the subnet
-ping -b -c 3 10.100.10.255
+ping -b -c 3 192.168.1.255
 ```
 
 **UniFi-Specific Checks:**
@@ -117,11 +117,11 @@ ping -b -c 3 10.100.10.255
 **Test:**
 ```bash
 # Quick port test
-nc -zv 10.100.10.61 443
-nc -zv 10.100.10.61 80
+nc -zv 192.168.1.100 443
+nc -zv 192.168.1.100 80
 
 # UDP test (harder, needs special approach)
-echo "test" | nc -u -w1 10.100.10.61 8194
+echo "test" | nc -u -w1 192.168.1.100 8194
 ```
 
 ---
@@ -132,19 +132,19 @@ echo "test" | nc -u -w1 10.100.10.61 8194
 
 1. **Start Wireshark capture:**
 ```bash
-sudo wireshark -i <your-interface> -k -f "host 10.100.10.61 or udp port 8194 or udp port 5353"
+sudo wireshark -i <your-interface> -k -f "host 192.168.1.100 or udp port 8194 or udp port 5353"
 ```
 
 2. **Key Traffic Patterns:**
    - **UDP 8194**: Should see periodic broadcasts from scanner
    - **mDNS (UDP 5353)**: Should see `_scanner._tcp.local` or similar
    - **HTTP/HTTPS**: Should see responses if you access web interface
-   - **ARP**: Should see ARP replies from 84:25:3f:6d:b6:10
+   - **ARP**: Should see ARP replies from aa:bb:cc:dd:ee:ff
 
 3. **Wireshark Filters:**
 ```
 # All scanner traffic
-ip.addr == 10.100.10.61
+ip.addr == 192.168.1.100
 
 # Discovery protocol only
 udp.port == 8194
@@ -153,7 +153,7 @@ udp.port == 8194
 udp.port == 5353 and dns
 
 # Scanner HTTP traffic
-http and ip.addr == 10.100.10.61
+http and ip.addr == 192.168.1.100
 
 # Look for scanner advertisements
 dns.qry.name contains "scan" or mdns
@@ -174,14 +174,14 @@ Try accessing the scanner's web interface directly:
 
 ```bash
 # HTTP
-curl -v http://10.100.10.61
+curl -v http://192.168.1.100
 
 # HTTPS (ignore cert warnings)
-curl -k -v https://10.100.10.61
+curl -k -v https://192.168.1.100
 
 # Or in browser
-open https://10.100.10.61  # macOS
-xdg-open https://10.100.10.61  # Linux
+open https://192.168.1.100  # macOS
+xdg-open https://192.168.1.100  # Linux
 ```
 
 The web interface often has:
@@ -208,10 +208,10 @@ sudo tcpdump -i any -A -n port 5353 | grep -i "ix1600\|scan\|probe"
 # 2. Check UniFi DNS entries
 # Log into UniFi controller and check:
 # - Settings > Networks > Default > DNS
-# - Check if 10.100.10.61 has a manual DNS entry
+# - Check if 192.168.1.100 has a manual DNS entry
 
 # 3. Force correct hostname in local hosts file
-echo "10.100.10.61 ScanSnap-iX1600 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
+echo "192.168.1.100 ScanSnap-iX1600 ScanSnap-iX1600.local" | sudo tee -a /etc/hosts
 
 # 4. Clear DNS cache
 sudo systemd-resolve --flush-caches  # Linux
@@ -277,9 +277,9 @@ sudo rm -rf ~/.sane/*
 ### 2. Force Static IP Configuration
 If DHCP is causing issues:
 - Scanner touchscreen > Settings > Network
-- Set static IP: 10.100.10.61
-- Gateway: 10.100.10.1 (your UniFi gateway)
-- DNS: 10.100.10.1 or 8.8.8.8
+- Set static IP: 192.168.1.100
+- Gateway: 192.168.1.1 (your UniFi gateway)
+- DNS: 192.168.1.1 or 8.8.8.8
 
 ### 3. Disable IPv6 (if enabled)
 ```bash
@@ -303,13 +303,13 @@ If still having issues, collect this data:
 
 # Capture 60 seconds of traffic while reproducing issue
 sudo timeout 60 tcpdump -i any -w scansnap_debug.pcap \
-  "host 10.100.10.61 or udp port 8194 or udp port 5353"
+  "host 192.168.1.100 or udp port 8194 or udp port 5353"
 
 # Get UniFi network info
 # Export from controller: Settings > System > Backup > Download
 
 # Get scanner system info (from web interface if accessible)
-curl -k https://10.100.10.61/system/info > scanner_info.json
+curl -k https://192.168.1.100/system/info > scanner_info.json
 ```
 
 ---
@@ -319,7 +319,7 @@ curl -k https://10.100.10.61/system/info > scanner_info.json
 When working correctly, you should see:
 1. Scanner broadcasts UDP 8194 discovery packets every 30-60 seconds
 2. mDNS advertises scanner as `_scanner._tcp.local`
-3. Scanner web interface accessible at https://10.100.10.61
+3. Scanner web interface accessible at https://192.168.1.100
 4. ARP table shows correct MAC address association
 5. ScanSnap app finds scanner within 5-10 seconds of launch
 
@@ -329,10 +329,10 @@ When working correctly, you should see:
 
 ```bash
 # Test connectivity
-ping -c 4 10.100.10.61
+ping -c 4 192.168.1.100
 
 # Check open ports
-nmap -p 80,443,8194 10.100.10.61
+nmap -p 80,443,8194 192.168.1.100
 
 # Monitor for discovery broadcasts
 sudo tcpdump -i any -n udp port 8194
@@ -341,13 +341,13 @@ sudo tcpdump -i any -n udp port 8194
 avahi-browse -a -t | grep -i scan
 
 # Access web interface
-curl -k https://10.100.10.61
+curl -k https://192.168.1.100
 
 # View ARP entry
-arp -a | grep 10.100.10.61
+arp -a | grep 192.168.1.100
 
 # Check routing
-ip route get 10.100.10.61
+ip route get 192.168.1.100
 ```
 
 ---

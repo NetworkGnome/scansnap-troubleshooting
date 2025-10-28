@@ -90,8 +90,8 @@ Your `.env` file should look like this (with your actual values):
 
 ```bash
 # ScanSnap Configuration
-SCANNER_IP=10.100.10.61
-SCANNER_MAC=84:25:3f:6d:b6:10
+SCANNER_IP=192.168.1.100
+SCANNER_MAC=aa:bb:cc:dd:ee:ff
 ```
 
 **⚠️ This file is private and will NOT be uploaded to GitHub**
@@ -199,7 +199,7 @@ grep ".env" .gitignore
    ```
 
 3. **Never hardcode in scripts:**
-   - ❌ `SCANNER_IP="10.100.10.61"`
+   - ❌ `SCANNER_IP="192.168.1.100"`
    - ✅ `SCANNER_IP="${SCANNER_IP:-192.168.1.100}"`
 
 4. **Sanitize output files:**

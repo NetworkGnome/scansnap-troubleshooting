@@ -87,7 +87,7 @@ nmap -p 80,443,8080,8194,9000-9010 192.168.1.100
 ip mroute show
 
 # Test broadcast
-ping -b -c 3 10.100.10.255
+ping -b -c 3 192.168.1.255
 
 # Check firewall rules
 sudo iptables -L -n | grep 8194
