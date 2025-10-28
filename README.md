@@ -254,7 +254,7 @@ Found a bug or have a suggestion? Please open an issue or submit a pull request!
 ## 📚 Additional Resources
 
 - [Fujitsu ScanSnap Support](https://www.fujitsu.com/global/support/products/computing/peripheral/scanners/scansnap/)
-- [ScanSnap iX1600 Manual](https://www.fujitsu.com/global/support/products/computing/peripheral/scanners/scansnap/manual/)
+- [ScanSnap iX1600 Manual](https://www.pfu.ricoh.com/global/scanners/scansnap/support/manuals/ix1600.html)
 - [UniFi Network Documentation](https://help.ui.com/)
 
 ## ⚠️ Troubleshooting Support
